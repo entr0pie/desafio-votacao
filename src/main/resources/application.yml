@@ -1,0 +1,53 @@
+# Application Info
+info:
+  app:
+    name: desafio-votacao
+    description: Desafio técnico para a DB Server em Junho de 2024
+    version: 0.0.1
+  java:
+    vendor: ${java.specification.vendor}
+    version: ${java.version}
+  os:
+    arch: ${os.arch}
+    name: ${os.name}
+    version: ${os.version}	
+
+# Spring Actuator
+management:
+  endpoints:
+    web:
+      base-path: /management
+      exposure: {include: [info, health]}
+  info:
+    env:
+      enabled: true
+  endpoint:
+    health:
+      enabled: true
+      show-details: always
+
+# Swagger (Springdoc)
+springdoc:
+  api-docs:
+    path: /api/docs
+  swagger-ui:
+    path: /api/docs/swagger.html
+    operations-sorter: method
+
+logging:
+  level:
+    '[db.server.desafio_votacao]': INFO
+
+# Datasource configuration
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/desafio_votacao
+    username: postgres
+    password: dummypassword
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
