@@ -14,7 +14,7 @@ import db.server.desafio_votacao.domain.common.dtos.ExpectedErrorMessage;
 public class AgendaControllerAdvice {
 
 	@ExceptionHandler(AgendaNotFoundException.class)
-	public ResponseEntity<ExpectedErrorMessage> handleHandleNotFound(AgendaNotFoundException ex) {
+	public ResponseEntity<ExpectedErrorMessage> handleNotFound(AgendaNotFoundException ex) {
 		ExpectedErrorMessage error = new ExpectedErrorMessage(new Date(), ex.getMessage());
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
 	}

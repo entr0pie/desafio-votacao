@@ -28,7 +28,7 @@ public class AgendaControllerAdviceTest {
 		String expectedMessage = "Agenda not found";
 		AgendaNotFoundException ex = new AgendaNotFoundException(expectedMessage);
 
-		ResponseEntity<ExpectedErrorMessage> message = agendaControllerAdvice.handleHandleNotFound(ex);
+		ResponseEntity<ExpectedErrorMessage> message = agendaControllerAdvice.handleNotFound(ex);
 
 		assertEquals(HttpStatus.NOT_FOUND, message.getStatusCode(), "Should return 404 status code.");
 		assertEquals(expectedMessage, message.getBody().getError(), "Should return expected message.");
