@@ -1,6 +1,6 @@
 package db.server.desafio_votacao.domain.agenda.controllers;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +15,7 @@ public class AgendaControllerAdvice {
 
 	@ExceptionHandler(AgendaNotFoundException.class)
 	public ResponseEntity<ExpectedErrorMessage> handleNotFound(AgendaNotFoundException ex) {
-		ExpectedErrorMessage error = new ExpectedErrorMessage(new Date(), ex.getMessage());
+		ExpectedErrorMessage error = new ExpectedErrorMessage(LocalDateTime.now(), ex.getMessage());
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
 	}
 }

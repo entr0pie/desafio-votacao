@@ -1,6 +1,6 @@
 package db.server.desafio_votacao.domain.common.dtos;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,6 +13,11 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class ExpectedErrorMessage {
-	private Date timestamp;
+	private LocalDateTime timestamp;
 	private String error;
+
+	public ExpectedErrorMessage(String error) {
+		this.timestamp = LocalDateTime.now();
+		this.error = error;
+	}
 }
