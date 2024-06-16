@@ -37,17 +37,3 @@ springdoc:
 logging:
   level:
     '[db.server.desafio_votacao]': INFO
-
-# Datasource configuration
-spring:
-  datasource:
-    url: jdbc:postgresql://localhost:5432/desafio_votacao
-    username: postgres
-    password: dummypassword
-    driver-class-name: org.postgresql.Driver
-  jpa:
-    hibernate:
-      ddl-auto: update
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.PostgreSQLDialect
