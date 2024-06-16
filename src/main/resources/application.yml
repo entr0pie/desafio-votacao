@@ -3,7 +3,7 @@ info:
   app:
     name: desafio-votacao
     description: Desafio técnico para a DB Server em Junho de 2024
-    version: 0.0.1
+    version: 0.0.2
   java:
     vendor: ${java.specification.vendor}
     version: ${java.version}
