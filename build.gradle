@@ -64,7 +64,8 @@ jacocoTestReport {
             	'**/dtos/**',
             	'**/models/**',
             	'**/exceptions/**',
-            	'**/enums/**'
+            	'**/enums/**',
+            	'**/config/**',
             ])
         }))
     }

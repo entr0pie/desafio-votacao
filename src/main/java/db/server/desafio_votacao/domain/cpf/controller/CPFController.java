@@ -21,7 +21,7 @@ import lombok.AllArgsConstructor;
 @Service
 @AllArgsConstructor
 @RestController
-public class CPFController {
+public class CPFController implements CpfControllerSwagger {
 
 	private final CPFValidator validator;
 	private final UserService userService;
