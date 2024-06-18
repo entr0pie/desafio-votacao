@@ -9,6 +9,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
@@ -16,6 +17,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import db.server.desafio_votacao.domain.user.config.UserConfigProperties;
 import db.server.desafio_votacao.domain.user.dtos.RegisterUserRequest;
 import db.server.desafio_votacao.domain.user.exceptions.UserAlreadyRegisteredException;
 import db.server.desafio_votacao.domain.user.models.UserModel;
@@ -23,6 +25,7 @@ import db.server.desafio_votacao.domain.user.services.UserService;
 
 @ActiveProfiles("test")
 @WebMvcTest(controllers = { UserController.class })
+@EnableConfigurationProperties(UserConfigProperties.class)
 public class UserControllerTest {
 
 	@MockBean
@@ -30,6 +33,9 @@ public class UserControllerTest {
 
 	@Autowired
 	private MockMvc mockMvc;
+
+	@Autowired
+	private UserConfigProperties config;
 
 	@Autowired
 	private ObjectMapper objectMapper;
@@ -45,7 +51,7 @@ public class UserControllerTest {
 		when(this.userService.register(eq(request.getEmail()), eq(request.getCpf())))
 				.thenThrow(new UserAlreadyRegisteredException("User already registered"));
 
-		mockMvc.perform(post("/user/register").contentType(JSON).content(requestData))
+		mockMvc.perform(post(this.config.getRegister()).contentType(JSON).content(requestData))
 				.andExpect(status().isBadRequest()).andExpect(jsonPath("$.timestamp").isNotEmpty())
 				.andExpect(jsonPath("$.error").value("User already registered"));
 	}
@@ -59,8 +65,9 @@ public class UserControllerTest {
 		when(this.userService.register(eq(request.getEmail()), eq(request.getCpf())))
 				.thenReturn(new UserModel(1, "email", "cpf"));
 
-		mockMvc.perform(post("/user/register").contentType(JSON).content(requestData)).andExpect(status().isOk())
-				.andExpect(jsonPath("$.email").value("email")).andExpect(jsonPath("$.cpf").value("cpf"));
+		mockMvc.perform(post(this.config.getRegister()).contentType(JSON).content(requestData))
+				.andExpect(status().isOk()).andExpect(jsonPath("$.email").value("email"))
+				.andExpect(jsonPath("$.cpf").value("cpf"));
 	}
 
 }

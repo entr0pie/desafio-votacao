@@ -11,6 +11,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
@@ -20,6 +21,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import db.server.desafio_votacao.domain.user.exceptions.UserNotFoundException;
 import db.server.desafio_votacao.domain.user.models.UserModel;
+import db.server.desafio_votacao.domain.votation.config.VotationConfigProperties;
 import db.server.desafio_votacao.domain.votation.dtos.GetVoteResponse;
 import db.server.desafio_votacao.domain.votation.dtos.VotationResults;
 import db.server.desafio_votacao.domain.votation.dtos.VoteRequest;
@@ -32,6 +34,7 @@ import db.server.desafio_votacao.domain.voting_session.models.VotingSessionModel
 
 @ActiveProfiles("test")
 @WebMvcTest(controllers = { VotationController.class })
+@EnableConfigurationProperties(VotationConfigProperties.class)
 public class VotationControllerTest {
 
 	@MockBean
@@ -39,6 +42,9 @@ public class VotationControllerTest {
 
 	@Autowired
 	private MockMvc mockMvc;
+
+	@Autowired
+	private VotationConfigProperties config;
 
 	@Autowired
 	private ObjectMapper objectMapper;
@@ -54,7 +60,7 @@ public class VotationControllerTest {
 		when(this.voteService.vote(eq(1), eq(1), eq(true)))
 				.thenThrow(new AlreadyVotedException("The user has already voted in this session."));
 
-		mockMvc.perform(post("/votes", 1, 1, true).contentType(JSON).content(requestContent))
+		mockMvc.perform(post(this.config.getVote(), 1, 1, true).contentType(JSON).content(requestContent))
 				.andExpect(status().isBadRequest()).andExpect(content().contentType(JSON))
 				.andExpect(content().contentType(JSON)).andExpect(jsonPath("$.timestamp").isNotEmpty())
 				.andExpect(jsonPath("$.error").value("The user has already voted in this session."));
@@ -69,7 +75,7 @@ public class VotationControllerTest {
 		when(this.voteService.vote(eq(1), eq(1), eq(true)))
 				.thenThrow(new SessionClosedException("The session is closed."));
 
-		mockMvc.perform(post("/votes", 1, 1, true).contentType(JSON).content(requestContent))
+		mockMvc.perform(post(this.config.getVote(), 1, 1, true).contentType(JSON).content(requestContent))
 				.andExpect(status().isBadRequest()).andExpect(content().contentType(JSON))
 				.andExpect(content().contentType(JSON)).andExpect(jsonPath("$.timestamp").isNotEmpty())
 				.andExpect(jsonPath("$.error").value("The session is closed."));
@@ -84,7 +90,7 @@ public class VotationControllerTest {
 		when(this.voteService.vote(eq(1), eq(1), eq(true)))
 				.thenThrow(new VotingSessionNotFoundException("The requested voting session was not found."));
 
-		mockMvc.perform(post("/votes", 1, 1, true).contentType(JSON).content(requestContent))
+		mockMvc.perform(post(this.config.getVote(), 1, 1, true).contentType(JSON).content(requestContent))
 				.andExpect(status().isNotFound()).andExpect(content().contentType(JSON))
 				.andExpect(content().contentType(JSON)).andExpect(jsonPath("$.timestamp").isNotEmpty())
 				.andExpect(jsonPath("$.error").value("The requested voting session was not found."));
@@ -99,7 +105,7 @@ public class VotationControllerTest {
 		when(this.voteService.vote(eq(1), eq(1), eq(true)))
 				.thenThrow(new UserNotFoundException("The requested user was not found."));
 
-		mockMvc.perform(post("/votes", 1, 1, true).contentType(JSON).content(requestContent))
+		mockMvc.perform(post(this.config.getVote(), 1, 1, true).contentType(JSON).content(requestContent))
 				.andExpect(status().isNotFound()).andExpect(content().contentType(JSON))
 				.andExpect(content().contentType(JSON)).andExpect(jsonPath("$.timestamp").isNotEmpty())
 				.andExpect(jsonPath("$.error").value("The requested user was not found."));
@@ -119,8 +125,9 @@ public class VotationControllerTest {
 
 		when(this.voteService.vote(eq(1), eq(1), eq(true))).thenReturn(vote);
 
-		mockMvc.perform(post("/votes").contentType(JSON).content(requestContent)).andExpect(status().isOk())
-				.andExpect(content().contentType(JSON)).andExpect(content().json(responseContent));
+		mockMvc.perform(post(this.config.getVote()).contentType(JSON).content(requestContent))
+				.andExpect(status().isOk()).andExpect(content().contentType(JSON))
+				.andExpect(content().json(responseContent));
 	}
 
 	@Test
@@ -129,8 +136,9 @@ public class VotationControllerTest {
 		when(this.voteService.getResults(eq(1)))
 				.thenThrow(new VotingSessionNotFoundException("The requested voting session was not found."));
 
-		mockMvc.perform(get("/votes/{id}", 1)).andExpect(status().isNotFound()).andExpect(content().contentType(JSON))
-				.andExpect(content().contentType(JSON)).andExpect(jsonPath("$.timestamp").isNotEmpty())
+		mockMvc.perform(get(this.config.getResults(), 1)).andExpect(status().isNotFound())
+				.andExpect(content().contentType(JSON)).andExpect(content().contentType(JSON))
+				.andExpect(jsonPath("$.timestamp").isNotEmpty())
 				.andExpect(jsonPath("$.error").value("The requested voting session was not found."));
 	}
 
@@ -142,8 +150,8 @@ public class VotationControllerTest {
 
 		when(this.voteService.getResults(eq(1))).thenReturn(votationResults);
 
-		mockMvc.perform(get("/votes/{id}", 1)).andExpect(status().isOk()).andExpect(content().contentType(JSON))
-				.andExpect(content().json(responseContent));
+		mockMvc.perform(get(this.config.getResults(), 1)).andExpect(status().isOk())
+				.andExpect(content().contentType(JSON)).andExpect(content().json(responseContent));
 	}
 
 }

@@ -15,6 +15,7 @@ import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
@@ -27,6 +28,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import db.server.desafio_votacao.domain.agenda.exceptions.AgendaNotFoundException;
 import db.server.desafio_votacao.domain.agenda.models.AgendaModel;
 import db.server.desafio_votacao.domain.common.dtos.PageResponse;
+import db.server.desafio_votacao.domain.voting_session.config.VotingSessionConfigProperties;
 import db.server.desafio_votacao.domain.voting_session.dtos.CreateVotingSessionRequest;
 import db.server.desafio_votacao.domain.voting_session.dtos.GetVotingSessionResponse;
 import db.server.desafio_votacao.domain.voting_session.exceptions.InvalidDateException;
@@ -36,6 +38,7 @@ import db.server.desafio_votacao.domain.voting_session.services.VotingSessionSer
 
 @ActiveProfiles("test")
 @WebMvcTest(controllers = { VotingSessionController.class })
+@EnableConfigurationProperties(VotingSessionConfigProperties.class)
 public class VotingSessionControllerTest {
 
 	@MockBean
@@ -43,6 +46,9 @@ public class VotingSessionControllerTest {
 
 	@Autowired
 	private MockMvc mockMvc;
+
+	@Autowired
+	private VotingSessionConfigProperties config;
 
 	@Autowired
 	private ObjectMapper objectMapper;
@@ -58,9 +64,9 @@ public class VotingSessionControllerTest {
 		when(this.votingSessionService.create(eq(agendaId), any(), any()))
 				.thenThrow(new InvalidDateException("Error message."));
 
-		mockMvc.perform(post("/voting-session").contentType(JSON).content(request)).andExpect(status().isBadRequest())
-				.andExpect(content().contentType(JSON)).andExpect(jsonPath("$.timestamp").isNotEmpty())
-				.andExpect(jsonPath("$.error").value("Error message."));
+		mockMvc.perform(post(this.config.getCreate()).contentType(JSON).content(request))
+				.andExpect(status().isBadRequest()).andExpect(content().contentType(JSON))
+				.andExpect(jsonPath("$.timestamp").isNotEmpty()).andExpect(jsonPath("$.error").value("Error message."));
 	}
 
 	@Test
@@ -72,9 +78,9 @@ public class VotingSessionControllerTest {
 		when(this.votingSessionService.create(eq(agendaId), any(), any()))
 				.thenThrow(new AgendaNotFoundException("Error message."));
 
-		mockMvc.perform(post("/voting-session").contentType(JSON).content(request)).andExpect(status().isNotFound())
-				.andExpect(content().contentType(JSON)).andExpect(jsonPath("$.timestamp").isNotEmpty())
-				.andExpect(jsonPath("$.error").value("Error message."));
+		mockMvc.perform(post(this.config.getCreate()).contentType(JSON).content(request))
+				.andExpect(status().isNotFound()).andExpect(content().contentType(JSON))
+				.andExpect(jsonPath("$.timestamp").isNotEmpty()).andExpect(jsonPath("$.error").value("Error message."));
 	}
 
 	@Test
@@ -85,7 +91,7 @@ public class VotingSessionControllerTest {
 		when(this.votingSessionService.findById(eq(votingSessionId)))
 				.thenThrow(new VotingSessionNotFoundException("Error message."));
 
-		mockMvc.perform(get("/voting-session/{id}", votingSessionId)).andExpect(status().isNotFound())
+		mockMvc.perform(get(this.config.getFindById(), votingSessionId)).andExpect(status().isNotFound())
 				.andExpect(content().contentType(JSON)).andExpect(jsonPath("$.timestamp").isNotEmpty())
 				.andExpect(jsonPath("$.error").value("Error message."));
 	}
@@ -104,7 +110,7 @@ public class VotingSessionControllerTest {
 
 		when(this.votingSessionService.create(eq(agendaId), eq(startDate), eq(endDate))).thenReturn(votingSession);
 
-		mockMvc.perform(post("/voting-session").contentType(JSON).content(request)).andExpect(status().isOk())
+		mockMvc.perform(post(this.config.getCreate()).contentType(JSON).content(request)).andExpect(status().isOk())
 				.andExpect(content().contentType(JSON)).andExpect(content().json(expectedContent));
 	}
 
@@ -119,7 +125,7 @@ public class VotingSessionControllerTest {
 
 		when(this.votingSessionService.findById(eq(votingSessionId))).thenReturn(votingSession);
 
-		mockMvc.perform(get("/voting-session/{id}", votingSessionId)).andExpect(status().isOk())
+		mockMvc.perform(get(this.config.getFindById(), votingSessionId)).andExpect(status().isOk())
 				.andExpect(content().contentType(JSON)).andExpect(content().json(expectedContent));
 	}
 
@@ -139,7 +145,7 @@ public class VotingSessionControllerTest {
 
 		String expectedContent = this.objectMapper.writeValueAsString(expectedObject);
 
-		mockMvc.perform(get("/voting-session/").param("page", "1").param("size", "10")).andExpect(status().isOk())
+		mockMvc.perform(get(this.config.getFindAll()).param("page", "1").param("size", "10")).andExpect(status().isOk())
 				.andExpect(content().contentType(JSON)).andExpect(content().json(expectedContent));
 	}
 

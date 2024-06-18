@@ -44,7 +44,7 @@ endpoint:
     findById: /agenda/{id}
     findAll: /agenda
     create: /agenda
-    update: /agenda
+    update: /agenda/{id}
     delete: /agenda/{id}
   cpf:
     validate: /cpf/{cpf}

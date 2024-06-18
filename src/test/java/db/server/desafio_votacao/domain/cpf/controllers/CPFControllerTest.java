@@ -10,11 +10,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
+import db.server.desafio_votacao.domain.cpf.config.CpfConfigProperties;
 import db.server.desafio_votacao.domain.cpf.controller.CPFController;
 import db.server.desafio_votacao.domain.cpf.enums.VoteEligibility;
 import db.server.desafio_votacao.domain.cpf.exceptions.InvalidCPFException;
@@ -25,6 +27,7 @@ import db.server.desafio_votacao.domain.user.services.UserService;
 
 @ActiveProfiles("test")
 @WebMvcTest(controllers = { CPFController.class })
+@EnableConfigurationProperties(CpfConfigProperties.class)
 public class CPFControllerTest {
 
 	@MockBean
@@ -37,6 +40,9 @@ public class CPFControllerTest {
 	private UserEligibilityService userEligibilityService;
 
 	@Autowired
+	private CpfConfigProperties config;
+
+	@Autowired
 	private MockMvc mockMvc;
 
 	private static final String JSON = "application/json";
@@ -46,7 +52,7 @@ public class CPFControllerTest {
 	public void shouldThrowInvalidCpfException() throws Exception {
 		when(this.validator.validate(eq("12345678901"))).thenThrow(new InvalidCPFException("Invalid CPF"));
 
-		mockMvc.perform(get("/cpf/12345678901")).andExpect(status().isBadRequest())
+		mockMvc.perform(get(this.config.getValidate(), "12345678901")).andExpect(status().isBadRequest())
 				.andExpect(content().contentType(JSON)).andExpect(jsonPath("$.timestamp").isNotEmpty())
 				.andExpect(jsonPath("$.error").value("Invalid CPF"));
 	}
@@ -57,8 +63,9 @@ public class CPFControllerTest {
 		when(this.validator.validate(eq("12345678901"))).thenReturn("12345678901");
 		when(this.userService.findByCPF(eq("12345678901"))).thenThrow(new UserNotFoundException("User not found"));
 
-		mockMvc.perform(get("/cpf/12345678901")).andExpect(status().isNotFound()).andExpect(content().contentType(JSON))
-				.andExpect(jsonPath("$.timestamp").isNotEmpty()).andExpect(jsonPath("$.error").value("User not found"));
+		mockMvc.perform(get(this.config.getValidate(), "12345678901")).andExpect(status().isNotFound())
+				.andExpect(content().contentType(JSON)).andExpect(jsonPath("$.timestamp").isNotEmpty())
+				.andExpect(jsonPath("$.error").value("User not found"));
 	}
 
 	@Test
@@ -68,7 +75,7 @@ public class CPFControllerTest {
 		when(this.userService.findByCPF(eq("12345678901"))).thenReturn(null);
 		when(this.userEligibilityService.check(eq(null))).thenReturn(VoteEligibility.UNABLE_TO_VOTE);
 
-		mockMvc.perform(get("/cpf/12345678901")).andExpect(status().isBadRequest())
+		mockMvc.perform(get(this.config.getValidate(), "12345678901")).andExpect(status().isBadRequest())
 				.andExpect(content().contentType(JSON)).andExpect(jsonPath("$.status").value("UNABLE_TO_VOTE"));
 	}
 
@@ -79,7 +86,7 @@ public class CPFControllerTest {
 		when(this.userService.findByCPF(eq("12345678901"))).thenReturn(null);
 		when(this.userEligibilityService.check(eq(null))).thenReturn(VoteEligibility.ABLE_TO_VOTE);
 
-		mockMvc.perform(get("/cpf/12345678901")).andExpect(status().isOk()).andExpect(content().contentType(JSON))
-				.andExpect(jsonPath("$.status").value("ABLE_TO_VOTE"));
+		mockMvc.perform(get(this.config.getValidate(), "12345678901")).andExpect(status().isOk())
+				.andExpect(content().contentType(JSON)).andExpect(jsonPath("$.status").value("ABLE_TO_VOTE"));
 	}
 }

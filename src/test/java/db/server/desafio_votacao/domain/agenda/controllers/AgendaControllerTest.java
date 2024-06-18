@@ -15,6 +15,7 @@ import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
@@ -24,6 +25,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import db.server.desafio_votacao.domain.agenda.config.AgendaConfigProperties;
 import db.server.desafio_votacao.domain.agenda.dtos.CreateAgendaRequest;
 import db.server.desafio_votacao.domain.agenda.dtos.GetAgendaResponse;
 import db.server.desafio_votacao.domain.agenda.dtos.UpdateAgendaRequest;
@@ -34,6 +36,7 @@ import db.server.desafio_votacao.domain.common.dtos.PageResponse;
 
 @ActiveProfiles("test")
 @WebMvcTest(controllers = { AgendaController.class })
+@EnableConfigurationProperties(AgendaConfigProperties.class)
 public class AgendaControllerTest {
 
 	@MockBean
@@ -44,6 +47,9 @@ public class AgendaControllerTest {
 
 	@Autowired
 	private ObjectMapper objectMapper;
+
+	@Autowired
+	private AgendaConfigProperties agendaConfig;
 
 	private static final String JSON = "application/json";
 
@@ -56,8 +62,8 @@ public class AgendaControllerTest {
 
 		when(this.agendaService.findById(eq(validId))).thenReturn(expectedAgenda);
 
-		mockMvc.perform(get("/agenda/{id}", validId)).andExpect(status().isOk()).andExpect(content().contentType(JSON))
-				.andExpect(content().json(expectedContent));
+		mockMvc.perform(get(this.agendaConfig.getFindById(), validId)).andExpect(status().isOk())
+				.andExpect(content().contentType(JSON)).andExpect(content().json(expectedContent));
 	}
 
 	@Test
@@ -68,7 +74,7 @@ public class AgendaControllerTest {
 		when(this.agendaService.findById(eq(invalidId)))
 				.thenThrow(new AgendaNotFoundException("The requested agenda could not be found."));
 
-		mockMvc.perform(get("/agenda/{id}", invalidId)).andExpect(status().isNotFound())
+		mockMvc.perform(get(this.agendaConfig.getFindById(), invalidId)).andExpect(status().isNotFound())
 				.andExpect(content().contentType(JSON)).andExpect(jsonPath("$.timestamp").isNotEmpty())
 				.andExpect(jsonPath("$.error").value("The requested agenda could not be found."));
 	}
@@ -86,8 +92,9 @@ public class AgendaControllerTest {
 
 		when(this.agendaService.findAll(eq(page), eq(size))).thenReturn(agendas);
 
-		mockMvc.perform(get("/agenda/").param("page", "1").param("size", "10")).andExpect(status().isOk())
-				.andExpect(content().contentType(JSON)).andExpect(content().json(expectedContent));
+		mockMvc.perform(get(this.agendaConfig.getFindAll()).param("page", "1").param("size", "10"))
+				.andExpect(status().isOk()).andExpect(content().contentType(JSON))
+				.andExpect(content().json(expectedContent));
 	}
 
 	@Test
@@ -105,8 +112,9 @@ public class AgendaControllerTest {
 
 		when(this.agendaService.create(eq(title), eq(description))).thenReturn(agenda);
 
-		mockMvc.perform(post("/agenda/").contentType(JSON).content(requestContent)).andExpect(status().isOk())
-				.andExpect(content().contentType(JSON)).andExpect(content().json(expectedContent));
+		mockMvc.perform(post(this.agendaConfig.getCreate()).contentType(JSON).content(requestContent))
+				.andExpect(status().isOk()).andExpect(content().contentType(JSON))
+				.andExpect(content().json(expectedContent));
 
 	}
 
@@ -122,7 +130,7 @@ public class AgendaControllerTest {
 		when(this.agendaService.update(eq(invalidId), eq(title), eq(description)))
 				.thenThrow(new AgendaNotFoundException("The requested agenda could not be found."));
 
-		mockMvc.perform(put("/agenda/{id}", invalidId).contentType(JSON).content(requestContent))
+		mockMvc.perform(put(this.agendaConfig.getUpdate(), invalidId).contentType(JSON).content(requestContent))
 				.andExpect(status().isNotFound()).andExpect(content().contentType(JSON))
 				.andExpect(jsonPath("$.timestamp").isNotEmpty())
 				.andExpect(jsonPath("$.error").value("The requested agenda could not be found."));
@@ -141,7 +149,7 @@ public class AgendaControllerTest {
 
 		when(this.agendaService.update(eq(invalidId), eq(title), eq(description))).thenReturn(agenda);
 
-		mockMvc.perform(put("/agenda/{id}", invalidId).contentType(JSON).content(requestContent))
+		mockMvc.perform(put(this.agendaConfig.getUpdate(), invalidId).contentType(JSON).content(requestContent))
 				.andExpect(status().isOk()).andExpect(content().contentType(JSON))
 				.andExpect(content().json(expectedContent));
 	}
@@ -154,7 +162,7 @@ public class AgendaControllerTest {
 		when(this.agendaService.delete(eq(invalidId)))
 				.thenThrow(new AgendaNotFoundException("The requested agenda could not be found."));
 
-		mockMvc.perform(delete("/agenda/{id}", invalidId)).andExpect(status().isNotFound())
+		mockMvc.perform(delete(this.agendaConfig.getDelete(), invalidId)).andExpect(status().isNotFound())
 				.andExpect(content().contentType(JSON)).andExpect(jsonPath("$.timestamp").isNotEmpty())
 				.andExpect(jsonPath("$.error").value("The requested agenda could not be found."));
 	}
@@ -170,7 +178,7 @@ public class AgendaControllerTest {
 
 		when(this.agendaService.delete(eq(invalidId))).thenReturn(agenda);
 
-		mockMvc.perform(delete("/agenda/{id}", invalidId)).andExpect(status().isOk())
+		mockMvc.perform(delete(this.agendaConfig.getDelete(), invalidId)).andExpect(status().isOk())
 				.andExpect(content().contentType(JSON)).andExpect(content().json(expectedResponse));
 	}
 
