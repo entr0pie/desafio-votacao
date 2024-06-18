@@ -17,7 +17,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import db.server.desafio_votacao.domain.user.dtos.RegisterUserRequest;
-import db.server.desafio_votacao.domain.user.exceptions.UserAlreadyRegistered;
+import db.server.desafio_votacao.domain.user.exceptions.UserAlreadyRegisteredException;
 import db.server.desafio_votacao.domain.user.models.UserModel;
 import db.server.desafio_votacao.domain.user.services.UserService;
 
@@ -43,7 +43,7 @@ public class UserControllerTest {
 		String requestData = this.objectMapper.writeValueAsString(request);
 
 		when(this.userService.register(eq(request.getEmail()), eq(request.getCpf())))
-				.thenThrow(new UserAlreadyRegistered("User already registered"));
+				.thenThrow(new UserAlreadyRegisteredException("User already registered"));
 
 		mockMvc.perform(post("/user/register").contentType(JSON).content(requestData))
 				.andExpect(status().isBadRequest()).andExpect(jsonPath("$.timestamp").isNotEmpty())
