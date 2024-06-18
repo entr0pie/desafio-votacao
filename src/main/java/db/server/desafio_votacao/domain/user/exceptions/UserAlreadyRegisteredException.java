@@ -5,15 +5,15 @@ package db.server.desafio_votacao.domain.user.exceptions;
  * 
  * @author Caio Porcel
  */
-public class UserAlreadyRegistered extends RuntimeException {
+public class UserAlreadyRegisteredException extends RuntimeException {
 	private static final long serialVersionUID = 1L;
 	private static final String DEFAULT_MESSAGE = "The specified user is already registered.";
 
-	public UserAlreadyRegistered() {
+	public UserAlreadyRegisteredException() {
 		super(DEFAULT_MESSAGE);
 	}
 
-	public UserAlreadyRegistered(String message) {
+	public UserAlreadyRegisteredException(String message) {
 		super(message);
 	}
 

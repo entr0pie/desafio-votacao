@@ -1,6 +1,7 @@
 package db.server.desafio_votacao.domain.user.services;
 
-import db.server.desafio_votacao.domain.user.exceptions.UserAlreadyRegistered;
+import db.server.desafio_votacao.domain.user.exceptions.UserAlreadyRegisteredException;
+import db.server.desafio_votacao.domain.user.exceptions.UserNotFoundException;
 import db.server.desafio_votacao.domain.user.models.UserModel;
 
 /**
@@ -15,7 +16,17 @@ public interface UserService {
 	 * @param email email for the user.
 	 * @param cpf   password for the user.
 	 * @return the created user.
-	 * @throws UserAlreadyRegistered if the user is already registered.
+	 * @throws UserAlreadyRegisteredException if the user is already registered.
 	 */
-	UserModel register(String email, String cpf) throws UserAlreadyRegistered;
+	UserModel register(String email, String cpf) throws UserAlreadyRegisteredException;
+
+	/**
+	 * Find a user by its id.
+	 * 
+	 * @param id id of the user.
+	 * @return the found user.
+	 * @throws UserNotFoundException if the user is not found.
+	 */
+	UserModel findById(Integer id) throws UserNotFoundException;
+
 }
