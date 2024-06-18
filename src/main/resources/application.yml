@@ -37,3 +37,23 @@ springdoc:
 logging:
   level:
     '[db.server.desafio_votacao]': INFO
+
+# Endpoint mapping configuration
+endpoint:
+  agenda:
+    findById: /agenda/{id}
+    findAll: /agenda
+    create: /agenda
+    update: /agenda
+    delete: /agenda/{id}
+  cpf:
+    validate: /cpf/{cpf}
+  user:
+    register: /user/register
+  votation:
+    vote: /votation/vote
+    results: /votation/result/{id}
+  voting-session:
+    findById: /votation/voting-session/{id}
+    findAll: /votation/voting-session
+    create: /votation/voting-session

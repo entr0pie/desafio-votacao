@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -25,7 +24,6 @@ import lombok.AllArgsConstructor;
  * @author Caio Porcel
  */
 @RestController
-@RequestMapping("/voting-session")
 @AllArgsConstructor
 public class VotingSessionController implements VotingSessionControllerSwagger {
 
@@ -33,7 +31,7 @@ public class VotingSessionController implements VotingSessionControllerSwagger {
 	private final static Logger LOGGER = LoggerFactory.getLogger(VotingSessionController.class);
 
 	@Override
-	@PostMapping
+	@PostMapping("${endpoint.voting-session.create}")
 	public ResponseEntity<GetVotingSessionResponse> create(@RequestBody CreateVotingSessionRequest data) {
 		LOGGER.info("Creating voting session for the agenda with id {}.", data.getAgendaId());
 		VotingSessionModel votingSession = votingSessionService.create(data.getAgendaId(), data.getStartDate(),
@@ -44,7 +42,7 @@ public class VotingSessionController implements VotingSessionControllerSwagger {
 	}
 
 	@Override
-	@GetMapping("/{id}")
+	@GetMapping("${endpoint.voting-session.findById}")
 	public ResponseEntity<GetVotingSessionResponse> findById(@PathVariable("id") Integer id) {
 		LOGGER.info("Finding voting session with id {}.", id);
 
@@ -54,7 +52,7 @@ public class VotingSessionController implements VotingSessionControllerSwagger {
 	}
 
 	@Override
-	@GetMapping("/")
+	@GetMapping("${endpoint.voting-session.findAll}")
 	public ResponseEntity<PageResponse<GetVotingSessionResponse>> findAll(@RequestParam(name = "page") Integer page,
 			@RequestParam(name = "size") Integer size) {
 		LOGGER.info("Finding all voting sessions. Page: {} | Size: {}.", page, size);

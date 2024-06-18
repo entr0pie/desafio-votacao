@@ -1,4 +1,4 @@
-package db.server.desafio_votacao.config;
+package db.server.desafio_votacao.domain.common.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

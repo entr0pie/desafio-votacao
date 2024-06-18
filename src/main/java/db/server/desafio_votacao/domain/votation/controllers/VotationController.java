@@ -5,7 +5,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import db.server.desafio_votacao.domain.user.exceptions.UserNotFoundException;
@@ -20,14 +19,13 @@ import db.server.desafio_votacao.domain.voting_session.exceptions.VotingSessionN
 import lombok.AllArgsConstructor;
 
 @RestController
-@RequestMapping("/votes")
 @AllArgsConstructor
 public class VotationController implements VotationControllerSwagger {
 
 	private final VoteService voteService;
 
 	@Override
-	@PostMapping
+	@PostMapping("${endpoint.votation.vote}")
 	public ResponseEntity<GetVoteResponse> vote(@RequestBody VoteRequest voteRequest) throws AlreadyVotedException,
 			SessionClosedException, VotingSessionNotFoundException, UserNotFoundException {
 		VoteModel vote = voteService.vote(voteRequest.getSessionId(), voteRequest.getUserId(), voteRequest.getAgrees());
@@ -38,7 +36,7 @@ public class VotationController implements VotationControllerSwagger {
 	}
 
 	@Override
-	@GetMapping("/{id}")
+	@GetMapping("${endpoint.votation.results}")
 	public ResponseEntity<VotationResults> getResults(@PathVariable("id") Integer sessionId)
 			throws VotingSessionNotFoundException {
 		VotationResults results = voteService.getResults(sessionId);

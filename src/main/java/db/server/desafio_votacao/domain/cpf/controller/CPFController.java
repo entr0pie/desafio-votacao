@@ -28,7 +28,7 @@ public class CPFController {
 	private final UserEligibilityService userEligibilityService;
 	private static final Logger LOGGER = LoggerFactory.getLogger(CPFController.class);
 
-	@GetMapping("/cpf/{cpf}")
+	@GetMapping("${endpoint.cpf.validate}")
 	public ResponseEntity<CPFValidationResponseDTO> isValid(@PathVariable("cpf") String cpf)
 			throws InvalidCPFException, UserNotFoundException {
 		LOGGER.info("Validating CPF: {}", cpf);
