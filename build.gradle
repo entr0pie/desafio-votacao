@@ -63,7 +63,8 @@ jacocoTestReport {
             	'db/server/desafio_votacao/config/**',
             	'**/dtos/**',
             	'**/models/**',
-            	'**/exceptions/**'
+            	'**/exceptions/**',
+            	'**/enums/**'
             ])
         }))
     }
