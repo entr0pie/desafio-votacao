@@ -16,6 +16,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 
+import db.server.desafio_votacao.domain.cpf.service.CPFValidator;
 import db.server.desafio_votacao.domain.user.exceptions.UserAlreadyRegisteredException;
 import db.server.desafio_votacao.domain.user.exceptions.UserNotFoundException;
 import db.server.desafio_votacao.domain.user.models.UserModel;
@@ -29,6 +30,9 @@ public class UserServiceJpaTest {
 	@MockBean
 	private UserRepository userRepository;
 
+	@MockBean
+	private CPFValidator cpfValidator;
+
 	@Autowired
 	private UserServiceJpa userServiceJpa;
 
@@ -37,6 +41,7 @@ public class UserServiceJpaTest {
 	public void shouldThrow_whenEmailIsAlreadyRegistered() {
 		UserModel user = new UserModel(1, "email", "cpf");
 
+		when(this.cpfValidator.validate(eq("cpf"))).thenReturn("cpf");
 		when(this.userRepository.findByEmail(eq("email"))).thenReturn(Optional.of(user));
 		when(this.userRepository.findByCpf(eq("cpf"))).thenReturn(Optional.empty());
 
@@ -50,6 +55,7 @@ public class UserServiceJpaTest {
 	public void shouldThrow_whenCpfIsAlreadyRegistered() {
 		UserModel user = new UserModel(1, "email", "cpf");
 
+		when(this.cpfValidator.validate(eq("cpf"))).thenReturn("cpf");
 		when(this.userRepository.findByEmail(eq("email"))).thenReturn(Optional.empty());
 		when(this.userRepository.findByCpf(eq("cpf"))).thenReturn(Optional.of(user));
 
@@ -64,6 +70,7 @@ public class UserServiceJpaTest {
 		UserModel user = new UserModel(1, "email", "cpf");
 		UserModel inputUser = new UserModel(null, "email", "cpf");
 
+		when(this.cpfValidator.validate(eq("cpf"))).thenReturn("cpf");
 		when(this.userRepository.findByEmail(eq("email"))).thenReturn(Optional.empty());
 		when(this.userRepository.findByCpf(eq("cpf"))).thenReturn(Optional.empty());
 		when(this.userRepository.save(eq(inputUser))).thenReturn(user);
@@ -90,6 +97,26 @@ public class UserServiceJpaTest {
 		when(this.userRepository.findById(eq(1))).thenReturn(Optional.of(user));
 		assertDoesNotThrow(() -> {
 			UserModel result = this.userServiceJpa.findById(1);
+			assertEquals(user, result, "The return value must be the repository's return.");
+		});
+	}
+
+	@Test
+	@DisplayName("Should throw UserNotFoundException when get by cpf")
+	public void shoulThrowUserNotFound_whenFindByCPF() {
+		when(this.userRepository.findByCpf(eq("cpf"))).thenReturn(Optional.empty());
+		assertThrows(UserNotFoundException.class, () -> {
+			this.userServiceJpa.findByCPF("cpf");
+		}, "The service must throw UserNotFoundException when the user is not found.");
+	}
+
+	@Test
+	@DisplayName("Should get user by cpf")
+	public void shouldFindByCPF() {
+		UserModel user = new UserModel(1, "email", "cpf");
+		when(this.userRepository.findByCpf(eq("cpf"))).thenReturn(Optional.of(user));
+		assertDoesNotThrow(() -> {
+			UserModel result = this.userServiceJpa.findByCPF("cpf");
 			assertEquals(user, result, "The return value must be the repository's return.");
 		});
 	}
