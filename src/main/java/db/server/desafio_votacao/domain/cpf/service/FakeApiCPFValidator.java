@@ -1,9 +1,10 @@
-package db.server.desafio_votacao.domain.cpf;
+package db.server.desafio_votacao.domain.cpf.service;
 
 import java.util.random.RandomGenerator;
 
 import org.springframework.stereotype.Service;
 
+import db.server.desafio_votacao.domain.cpf.exceptions.InvalidCPFException;
 import lombok.AllArgsConstructor;
 
 /**
@@ -30,8 +31,28 @@ public class FakeApiCPFValidator implements CPFValidator {
 	private final RandomGenerator random;
 
 	@Override
-	public boolean isValid(String cpf) {
-		return hasValidStructure(cpf) && isApiValid(cpf);
+	public String validate(String cpf) throws InvalidCPFException {
+		cpf = sanitize(cpf);
+
+		if (!hasValidStructure(cpf)) {
+			throw new InvalidCPFException("Invalid CPF structure.");
+		}
+
+		if (!isApiValid(cpf)) {
+			throw new InvalidCPFException("API rejected CPF.");
+		}
+
+		return cpf;
+	}
+
+	/**
+	 * Sanitize the CPF by removing all non-digit characters.
+	 * 
+	 * @param cpf CPF to sanitize.
+	 * @return Sanitized CPF.
+	 */
+	private String sanitize(String cpf) {
+		return cpf.replaceAll("[^\\d]", "");
 	}
 
 	/**
@@ -44,9 +65,6 @@ public class FakeApiCPFValidator implements CPFValidator {
 	 * @return true if the CPF has a valid structure, false otherwise.
 	 */
 	private boolean hasValidStructure(String cpf) {
-		// Remove non-digit characters from the CPF.
-		cpf = cpf.replaceAll("[^\\d]", "");
-
 		if (cpf.length() != 11) {
 			return false;
 		}
