@@ -22,6 +22,6 @@ public interface UserControllerSwagger {
 
 	@Operation(summary = "Find all users.")
 	ResponseEntity<PageResponse<GetUserResponse>> findAll(
-			@Parameter(description = "Page number", example = "1") Integer page,
+			@Parameter(description = "Page number", example = "0") Integer page,
 			@Parameter(description = "Size of each page", example = "10") Integer size);
 }

@@ -24,7 +24,7 @@ public interface AgendaControllerSwagger {
 
 	@Operation(summary = "Get all available agendas, filtering by page and size.")
 	ResponseEntity<PageResponse<GetAgendaResponse>> findAll(
-			@Parameter(description = "Page number", example = "10") Integer page,
+			@Parameter(description = "Page number", example = "0") Integer page,
 			@Parameter(description = "Size of each page", example = "15") Integer size);
 
 	@Operation(summary = "Create a new agenda.")

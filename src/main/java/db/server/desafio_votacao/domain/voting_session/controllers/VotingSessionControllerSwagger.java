@@ -22,6 +22,6 @@ public interface VotingSessionControllerSwagger {
 
 	@Operation(summary = "Get all available voting sessions, filtering by page and size.")
 	ResponseEntity<PageResponse<GetVotingSessionResponse>> findAll(
-			@Parameter(description = "Page number", example = "10") Integer page,
+			@Parameter(description = "Page number", example = "0") Integer page,
 			@Parameter(description = "Size of each page", example = "15") Integer size);
 }
