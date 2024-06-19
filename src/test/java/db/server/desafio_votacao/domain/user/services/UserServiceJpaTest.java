@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.DisplayName;
@@ -14,6 +15,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ActiveProfiles;
 
 import db.server.desafio_votacao.domain.cpf.service.CPFValidator;
@@ -118,6 +123,22 @@ public class UserServiceJpaTest {
 		assertDoesNotThrow(() -> {
 			UserModel result = this.userServiceJpa.findByCPF("cpf");
 			assertEquals(user, result, "The return value must be the repository's return.");
+		});
+	}
+
+	@Test
+	@DisplayName("Should find all")
+	public void shouldFindAll() {
+		UserModel user1 = new UserModel(1, "email1", "cpf1");
+		UserModel user2 = new UserModel(2, "email2", "cpf2");
+
+		Pageable pageable = PageRequest.of(0, 10);
+		Page<UserModel> page = new PageImpl<>(List.of(user1, user2));
+
+		when(this.userRepository.findAll(eq(pageable))).thenReturn(page);
+		assertDoesNotThrow(() -> {
+			Page<UserModel> result = this.userServiceJpa.findAll(0, 10);
+			assertEquals(page, result, "The return value must be the repository's return.");
 		});
 	}
 

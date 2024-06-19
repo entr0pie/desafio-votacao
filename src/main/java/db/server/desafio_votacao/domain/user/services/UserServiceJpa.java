@@ -2,6 +2,9 @@ package db.server.desafio_votacao.domain.user.services;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import db.server.desafio_votacao.domain.cpf.exceptions.InvalidCPFException;
@@ -60,5 +63,11 @@ public class UserServiceJpa implements UserService {
 			LOGGER.error("The specified user was not found.");
 			return new UserNotFoundException();
 		});
+	}
+
+	@Override
+	public Page<UserModel> findAll(int page, int size) {
+		Pageable pageable = PageRequest.of(page, size);
+		return this.userRepository.findAll(pageable);
 	}
 }

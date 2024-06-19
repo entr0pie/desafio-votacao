@@ -35,7 +35,7 @@ public class FakeApiCPFValidatorTest {
 	}
 
 	@Test
-	@DisplayName("Should reject more than eleven digits")
+	@DisplayName("Should reject equal digits")
 	public void shouldRejectAllDigitsEqual() {
 		for (int i = 0; i < 10; i++) {
 			String cpf = String.valueOf(i).repeat(11);
@@ -44,7 +44,7 @@ public class FakeApiCPFValidatorTest {
 	}
 
 	@Test
-	@DisplayName("Should reject all digits equal")
+	@DisplayName("Should reject invalid first verification digit")
 	public void shouldRejectInvalidFirstVerificationDigit() {
 		String cpf = "111.222.333-96";
 		assertThrows(InvalidCPFException.class, () -> fakeApiCPFValidator.validate(cpf));

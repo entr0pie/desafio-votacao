@@ -3,13 +3,15 @@ package db.server.desafio_votacao.domain.user.repositories;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.repository.PagingAndSortingRepository;
 
 import db.server.desafio_votacao.domain.user.models.UserModel;
 
 /**
  * Repository for the user entity.
  */
-public interface UserRepository extends JpaRepository<UserModel, Integer> {
+public interface UserRepository
+		extends JpaRepository<UserModel, Integer>, PagingAndSortingRepository<UserModel, Integer> {
 	/**
 	 * Find a user by its email.
 	 * 

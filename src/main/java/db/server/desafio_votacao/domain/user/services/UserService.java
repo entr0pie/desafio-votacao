@@ -1,5 +1,7 @@
 package db.server.desafio_votacao.domain.user.services;
 
+import org.springframework.data.domain.Page;
+
 import db.server.desafio_votacao.domain.cpf.exceptions.InvalidCPFException;
 import db.server.desafio_votacao.domain.user.exceptions.UserAlreadyRegisteredException;
 import db.server.desafio_votacao.domain.user.exceptions.UserNotFoundException;
@@ -39,5 +41,14 @@ public interface UserService {
 	 * @throws UserNotFoundException if the user is not found.
 	 */
 	UserModel findByCPF(String cpf) throws UserNotFoundException;
+
+	/**
+	 * Find all users.
+	 * 
+	 * @param page page number.
+	 * @param size number of elements per page.
+	 * @return the found users.
+	 */
+	Page<UserModel> findAll(int page, int size);
 
 }

@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class GetUserResponse {
+	private Integer id;
 	private String email;
 	private String cpf;
 }
