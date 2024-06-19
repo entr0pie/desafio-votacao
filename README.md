@@ -1,8 +1,5 @@
-# Desafio Votação - Caio Porcel
-
-<div style="text-align: center; height: 100px; margin: 15px;">
-    <img src="https://static-00.iconduck.com/assets.00/spring-icon-256x256-2efvkvky.png" alt="Spring Logo">
-</div>
+<p align="center"><img src="https://static-00.iconduck.com/assets.00/spring-icon-256x256-2efvkvky.png" width="130"></p>
+<h2 align="center">Desafio Votação - Caio Porcel</h2>
 
 > API Rest para votação de temas em SpringBoot.
 
