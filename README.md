@@ -50,6 +50,8 @@ Depois, inicie o container:
 docker compose up
 ```
 
+Se encontrar problemas para criar sessões de votação, verifique o [Apêndice: Configurando Timezones](#configuração-de-timezones).
+
 ### Utilizando Gradle
 
 A API necessita de uma instância do Postgres para funcionamento. Você pode [iniciá-la separadamente pelo Docker](#rodando-o-postgres-individualmente-no-docker) ou instalar no seu próprio computador.
@@ -134,3 +136,14 @@ endpoint:
 docker run --env=POSTGRES_PASSWORD=dummypassword --env=POSTGRES_DB=desafio_votacao -p 5432:5432 -d postgres
 ```
 
+### Configurando Timezones
+
+Na criação de sessões de votação, um horário de início e fim devem ser fornecidos no formato de data. Esses horários são usados para verificar o momento em que a votação é permitida.
+
+Se encontrar problemas para criar sessões de votação, verifique os seguintes pontos:
+
+1. Horário de início deve ser depois do horário atual;
+2. Horário de fim deve ser depois do horário de início;
+3. O horário fornecido deve ser da mesma região (timezone) do sistema operacional / container; 
+
+O [Dockerfile](./Dockerfile) da aplicação está configurado para o horário oficial de Brasília (-3 GMT).
