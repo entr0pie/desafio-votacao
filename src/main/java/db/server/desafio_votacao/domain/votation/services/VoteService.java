@@ -24,7 +24,7 @@ public interface VoteService {
 	 * @return the vote that was created.
 	 * @throws AlreadyVotedException          if the user has already voted in the
 	 *                                        session.
-	 * @throws SessionClosedException         if the session is already closed.
+	 * @throws SessionClosedException         if the session is closed.
 	 * @throws VotingSessionNotFoundException if the session is not found.
 	 * @throws UserNotFoundException          if the user is not found.
 	 */

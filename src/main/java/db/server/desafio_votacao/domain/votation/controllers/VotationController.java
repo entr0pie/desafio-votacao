@@ -1,5 +1,7 @@
 package db.server.desafio_votacao.domain.votation.controllers;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,12 +24,16 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class VotationController implements VotationControllerSwagger {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(VotationController.class);
 	private final VoteService voteService;
 
 	@Override
 	@PostMapping("${endpoint.votation.vote}")
 	public ResponseEntity<GetVoteResponse> vote(@RequestBody VoteRequest voteRequest) throws AlreadyVotedException,
 			SessionClosedException, VotingSessionNotFoundException, UserNotFoundException {
+
+		LOGGER.info("Counting a vote in session {} | Agrees: {}", voteRequest.getSessionId(), voteRequest.getAgrees());
+
 		VoteModel vote = voteService.vote(voteRequest.getSessionId(), voteRequest.getUserId(), voteRequest.getAgrees());
 		GetVoteResponse response = new GetVoteResponse(vote.getId(), vote.getUser().getId(), vote.getSession().getId(),
 				vote.getAgrees());
@@ -39,6 +45,9 @@ public class VotationController implements VotationControllerSwagger {
 	@GetMapping("${endpoint.votation.results}")
 	public ResponseEntity<VotationResults> getResults(@PathVariable("id") Integer sessionId)
 			throws VotingSessionNotFoundException {
+
+		LOGGER.info("Getting results for session {}", sessionId);
+
 		VotationResults results = voteService.getResults(sessionId);
 		return ResponseEntity.ok(results);
 	}

@@ -34,10 +34,12 @@ public class VotingSessionController implements VotingSessionControllerSwagger {
 	@PostMapping("${endpoint.voting-session.create}")
 	public ResponseEntity<GetVotingSessionResponse> create(@RequestBody CreateVotingSessionRequest data) {
 		LOGGER.info("Creating voting session for the agenda with id {}.", data.getAgendaId());
+
 		VotingSessionModel votingSession = votingSessionService.create(data.getAgendaId(), data.getStartDate(),
 				data.getEndDate());
 
 		GetVotingSessionResponse response = new GetVotingSessionResponse(votingSession);
+
 		return ResponseEntity.ok(response);
 	}
 
@@ -48,6 +50,7 @@ public class VotingSessionController implements VotingSessionControllerSwagger {
 
 		VotingSessionModel votingSession = votingSessionService.findById(id);
 		GetVotingSessionResponse response = new GetVotingSessionResponse(votingSession);
+
 		return ResponseEntity.ok(response);
 	}
 

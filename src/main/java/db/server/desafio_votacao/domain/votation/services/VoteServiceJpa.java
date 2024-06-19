@@ -2,6 +2,8 @@ package db.server.desafio_votacao.domain.votation.services;
 
 import java.time.LocalDateTime;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import db.server.desafio_votacao.domain.user.exceptions.UserNotFoundException;
@@ -21,6 +23,7 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class VoteServiceJpa implements VoteService {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(VoteServiceJpa.class);
 	private final VoteRepository voteRepository;
 	private final VotingSessionService votingSessionService;
 	private final UserService userService;
@@ -29,14 +32,19 @@ public class VoteServiceJpa implements VoteService {
 	public VoteModel vote(Integer sessionId, Integer userId, Boolean agrees) throws AlreadyVotedException,
 			SessionClosedException, VotingSessionNotFoundException, UserNotFoundException {
 
+		LOGGER.info("Counting a vote in session {} | Agrees: {}", sessionId, agrees);
+
 		UserModel user = userService.findById(userId);
 		VotingSessionModel session = votingSessionService.findById(sessionId);
 
 		if (this.voteRepository.findByUserIdAndSessionId(userId, sessionId).isPresent()) {
+			LOGGER.error("User {} has already voted in session {}", userId, sessionId);
 			throw new AlreadyVotedException();
 		}
 
 		if (isSessionOpened(session)) {
+			LOGGER.info("Session {} is opened. Counting vote.", sessionId);
+
 			VoteModel vote = new VoteModel();
 			vote.setUser(user);
 			vote.setSession(session);
@@ -44,6 +52,7 @@ public class VoteServiceJpa implements VoteService {
 			return voteRepository.save(vote);
 		}
 
+		LOGGER.error("Session {} is closed", sessionId);
 		throw new SessionClosedException();
 	}
 
@@ -56,6 +65,8 @@ public class VoteServiceJpa implements VoteService {
 
 	@Override
 	public VotationResults getResults(Integer sessionId) throws VotingSessionNotFoundException {
+		LOGGER.info("Getting results for session {}", sessionId);
+
 		VotingSessionModel session = votingSessionService.findById(sessionId);
 
 		Integer agrees = voteRepository.countBySessionIdAndAgrees(sessionId, true);

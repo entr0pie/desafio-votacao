@@ -29,14 +29,19 @@ public class AgendaServiceJpa implements AgendaService {
 
 	@Override
 	public AgendaModel create(String title, String description) {
+		LOGGER.info("Creating a new agenda with title: {}", title);
+
 		AgendaModel model = new AgendaModel();
 		model.setTitle(title);
 		model.setDescription(description);
+
 		return this.repository.save(model);
 	}
 
 	@Override
 	public AgendaModel findById(int id) throws AgendaNotFoundException {
+		LOGGER.info("Searching for the agenda with id: {}", id);
+
 		Optional<AgendaModel> agenda = this.repository.findById(id);
 
 		if (agenda.isEmpty()) {
@@ -49,12 +54,17 @@ public class AgendaServiceJpa implements AgendaService {
 
 	@Override
 	public Page<AgendaModel> findAll(int page, int size) {
+		LOGGER.info("Searching for all agendas in the database. Page: {}, Size: {}", page, size);
+
 		Pageable pageable = PageRequest.of(page, size);
+
 		return this.repository.findAll(pageable);
 	}
 
 	@Override
 	public AgendaModel update(int id, String title, String description) throws AgendaNotFoundException {
+		LOGGER.info("Updating the agenda with id: {}", id);
+
 		AgendaModel agenda = this.findById(id);
 
 		agenda.setTitle(title);
@@ -65,6 +75,8 @@ public class AgendaServiceJpa implements AgendaService {
 
 	@Override
 	public AgendaModel delete(int id) throws AgendaNotFoundException {
+		LOGGER.info("Deleting the agenda with id: {}", id);
+
 		AgendaModel agenda = this.findById(id);
 		this.repository.delete(agenda);
 		return agenda;

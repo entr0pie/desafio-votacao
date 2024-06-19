@@ -2,6 +2,8 @@ package db.server.desafio_votacao.domain.cpf.service;
 
 import java.util.random.RandomGenerator;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import db.server.desafio_votacao.domain.cpf.exceptions.InvalidCPFException;
@@ -28,17 +30,22 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class FakeApiCPFValidator implements CPFValidator {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(FakeApiCPFValidator.class);
 	private final RandomGenerator random;
 
 	@Override
 	public String validate(String cpf) throws InvalidCPFException {
+		LOGGER.info("Validating CPF");
+
 		cpf = sanitize(cpf);
 
 		if (!hasValidStructure(cpf)) {
+			LOGGER.error("Invalid CPF structure");
 			throw new InvalidCPFException("Invalid CPF structure.");
 		}
 
 		if (!isApiValid(cpf)) {
+			LOGGER.error("API rejected CPF");
 			throw new InvalidCPFException("API rejected CPF.");
 		}
 

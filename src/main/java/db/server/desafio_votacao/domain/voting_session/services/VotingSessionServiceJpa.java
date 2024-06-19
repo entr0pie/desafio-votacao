@@ -28,9 +28,9 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class VotingSessionServiceJpa implements VotingSessionService {
 
+	private final static Logger LOGGER = LoggerFactory.getLogger(VotingSessionServiceJpa.class);
 	private final VotingSessionRepository repository;
 	private final AgendaService agendaService;
-	private final static Logger LOGGER = LoggerFactory.getLogger(VotingSessionServiceJpa.class);
 
 	/**
 	 * Create a new voting session, specifying the end date.
@@ -47,6 +47,8 @@ public class VotingSessionServiceJpa implements VotingSessionService {
 	@Override
 	public VotingSessionModel create(Integer agendaId, LocalDateTime startDate, LocalDateTime endDate)
 			throws AgendaNotFoundException, InvalidDateException {
+
+		LOGGER.info("Creating a new voting session for the agenda with id {}.", agendaId);
 
 		LocalDateTime now = LocalDateTime.now();
 
@@ -65,6 +67,8 @@ public class VotingSessionServiceJpa implements VotingSessionService {
 			throw new InvalidDateException("Invalid date for voting session.");
 		}
 
+		LOGGER.info("Dates are valid for voting session.");
+
 		AgendaModel agenda = null;
 
 		try {
@@ -73,6 +77,8 @@ public class VotingSessionServiceJpa implements VotingSessionService {
 			LOGGER.error("Agenda not found for voting session.");
 			throw new AgendaNotFoundException("Agenda not found for voting session.");
 		}
+
+		LOGGER.info("Creating voting session.");
 
 		VotingSessionModel votingSession = new VotingSessionModel();
 		votingSession.setAgenda(agenda);
@@ -100,6 +106,8 @@ public class VotingSessionServiceJpa implements VotingSessionService {
 
 	@Override
 	public VotingSessionModel findById(int id) throws VotingSessionNotFoundException {
+		LOGGER.info("Finding voting session with id {}.", id);
+
 		Optional<VotingSessionModel> votingSession = this.repository.findById(id);
 
 		if (votingSession.isEmpty()) {
@@ -112,6 +120,7 @@ public class VotingSessionServiceJpa implements VotingSessionService {
 
 	@Override
 	public Page<VotingSessionModel> findAll(int page, int size) {
+		LOGGER.info("Finding all voting sessions. Page: {} | Size: {}.", page, size);
 		Pageable pageable = PageRequest.of(page, size);
 		return this.repository.findAll(pageable);
 	}

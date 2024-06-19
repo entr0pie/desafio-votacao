@@ -10,7 +10,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
-@Tag(name = "VotingSession", description = "Start a new voting sessions.")
+@Tag(name = "Voting Session", description = "Start a new voting sessions.")
 public interface VotingSessionControllerSwagger {
 
 	@Operation(summary = "Create a new voting session.")

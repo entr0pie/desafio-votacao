@@ -24,7 +24,7 @@ public class RandomUserEligibilityService implements UserEligibilityService {
 
 	@Override
 	public VoteEligibility check(UserModel user) {
-		LOGGER.debug("Checking user eligibility (based on the north winds): {}", user.getCpf());
+		LOGGER.info("Checking user eligibility (based on the north winds): {}", user.getCpf());
 		VoteEligibility[] values = VoteEligibility.values();
 		int randomIndex = this.random.nextInt(values.length);
 		return values[randomIndex];

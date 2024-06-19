@@ -24,12 +24,14 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class UserServiceJpa implements UserService {
 
-	private final UserRepository userRepository;
 	private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceJpa.class);
+	private final UserRepository userRepository;
 	private final CPFValidator cpfValidator;
 
 	@Override
 	public UserModel register(String email, String cpf) throws UserAlreadyRegisteredException, InvalidCPFException {
+		LOGGER.info("Registering a new user.");
+
 		cpf = this.cpfValidator.validate(cpf);
 
 		this.userRepository.findByEmail(email).ifPresent(u -> {
@@ -51,6 +53,8 @@ public class UserServiceJpa implements UserService {
 
 	@Override
 	public UserModel findById(Integer id) throws UserNotFoundException {
+		LOGGER.info("Searching for the user with id: {}", id);
+
 		return this.userRepository.findById(id).orElseThrow(() -> {
 			LOGGER.error("The specified user was not found.");
 			return new UserNotFoundException();
@@ -59,6 +63,8 @@ public class UserServiceJpa implements UserService {
 
 	@Override
 	public UserModel findByCPF(String cpf) throws UserNotFoundException {
+		LOGGER.info("Searching for the user with CPF");
+
 		return this.userRepository.findByCpf(cpf).orElseThrow(() -> {
 			LOGGER.error("The specified user was not found.");
 			return new UserNotFoundException();
@@ -67,6 +73,7 @@ public class UserServiceJpa implements UserService {
 
 	@Override
 	public Page<UserModel> findAll(int page, int size) {
+		LOGGER.info("Searching for all users in the database. Page: {}, Size: {}", page, size);
 		Pageable pageable = PageRequest.of(page, size);
 		return this.userRepository.findAll(pageable);
 	}
