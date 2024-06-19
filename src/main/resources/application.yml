@@ -62,7 +62,8 @@ endpoint:
 # Validator configurations (disable for testing purposes)
 cpf:
   validator:
-    enabled: false
+    enabled: true
+		
 user-eligibility:
   validator:
-    enabled: false
+    enabled: true
