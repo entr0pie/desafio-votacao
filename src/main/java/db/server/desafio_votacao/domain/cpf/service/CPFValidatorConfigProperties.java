@@ -1,4 +1,4 @@
-package db.server.desafio_votacao.domain.user.config;
+package db.server.desafio_votacao.domain.cpf.service;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
@@ -11,8 +11,7 @@ import lombok.NoArgsConstructor;
 @Configuration
 @NoArgsConstructor
 @AllArgsConstructor
-@ConfigurationProperties(prefix = "endpoint.user")
-public class UserConfigProperties {
-	private String register;
-	private String findAll;
+@ConfigurationProperties(prefix = "cpf.validator")
+public class CPFValidatorConfigProperties {
+	private Boolean enabled;
 }

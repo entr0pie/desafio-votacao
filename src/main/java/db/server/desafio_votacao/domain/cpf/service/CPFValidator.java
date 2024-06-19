@@ -13,6 +13,7 @@ public interface CPFValidator {
 	 * 
 	 * @param cpf cpf number to validate.
 	 * @return validated and sanitized CPF number.
+	 * @throws InvalidCPFException if the CPF number is invalid.
 	 */
 	String validate(String cpf) throws InvalidCPFException;
 }

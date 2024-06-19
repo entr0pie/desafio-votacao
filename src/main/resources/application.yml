@@ -50,6 +50,7 @@ endpoint:
     validate: /cpf/{cpf}
   user:
     register: /user/register
+    find-all: /user
   votation:
     vote: /votation/vote
     results: /votation/result/{id}
@@ -57,3 +58,11 @@ endpoint:
     findById: /votation/voting-session/{id}
     findAll: /votation/voting-session
     create: /votation/voting-session
+
+# Validator configurations (disable for testing purposes)
+cpf:
+  validator:
+    enabled: false
+user-eligibility:
+  validator:
+    enabled: false
