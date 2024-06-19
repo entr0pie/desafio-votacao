@@ -1,7 +1,7 @@
 <p align="center"><img src="https://static-00.iconduck.com/assets.00/spring-icon-256x256-2efvkvky.png" width="130"></p>
 <h2 align="center">Desafio Votação - Caio Porcel</h2>
 
-> API Rest para votação de temas em SpringBoot.
+> API Rest para votação de temas em SpringBoot, desenvolvida do dia 12/06/24 até 19/06/24.
 
 ## Sobre o projeto
 
