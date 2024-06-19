@@ -15,12 +15,12 @@ Consultoria [DB Server](https://db.tec.br/). Você pode encontrar o repositório
 
 ## Tecnologias Utilizadas
 
-- [Spring Boot](https://spring.io/projects/spring-boot);
-- [Spring Data JPA](https://spring.io/projects/spring-data-jpa);
-- [Postgres](https://www.postgresql.org/);
-- [Springdoc (Swagger e OpenAPI)](https://springdoc.org/);
-- [Spring Actuator](https://spring.io/guides/gs/actuator-service);
-- [JUnit](https://junit.org/), [Mockito](https://site.mockito.org/) e [JaCoCo](https://www.eclemma.org/jacoco/);
+- [Spring Boot](https://spring.io/projects/spring-boot)
+- [Spring Data JPA](https://spring.io/projects/spring-data-jpa)
+- [Postgres](https://www.postgresql.org/)
+- [Springdoc (Swagger e OpenAPI)](https://springdoc.org/)
+- [Spring Actuator](https://spring.io/guides/gs/actuator-service)
+- [JUnit](https://junit.org/), [Mockito](https://site.mockito.org/) e [JaCoCo](https://www.eclemma.org/jacoco/)
 - [JMeter](https://jmeter.apache.org/)
 
 ## Rodando o Projeto
