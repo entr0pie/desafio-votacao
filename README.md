@@ -50,7 +50,7 @@ Depois, inicie o container:
 docker compose up
 ```
 
-Se encontrar problemas para criar sessões de votação, verifique o [Apêndice: Configurando Timezones](#configuração-de-timezones).
+Se encontrar problemas para criar sessões de votação, verifique o [Apêndice: Configurando Timezones](#configurando-timezones).
 
 ### Utilizando Gradle
 
